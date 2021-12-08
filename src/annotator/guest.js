@@ -131,6 +131,7 @@ export default class Guest {
     this._hostFrame = hostFrame;
     this._highlightsVisible = false;
     this._isAdderVisible = false;
+    this.selectedRanges = /** @type {Range[]} */ []; // ranges of the current text selection
 
     this._adder = new Adder(this.element, {
       onAnnotate: async () => {
@@ -593,7 +594,7 @@ export default class Guest {
    */
   async createAnnotation({ highlight = false } = {}) {
     const ranges = this.selectedRanges ?? [];
-    this.selectedRanges = null;
+    this.selectedRanges = [];
 
     const info = await this.getDocumentInfo();
     const root = this.element;
