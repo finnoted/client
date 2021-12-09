@@ -6,7 +6,7 @@ import {
   preStartServer as preStartRPCServer,
 } from './cross-origin-rpc.js';
 import disableOpenerForExternalLinks from './util/disable-opener-for-external-links';
-import { fetchConfig } from './config/fetch-config';
+import { checkVersionAndOrigin, fetchConfig } from './config';
 import * as sentry from './util/sentry';
 
 // Read settings rendered into sidebar app HTML by service/extension.
@@ -14,7 +14,12 @@ const appConfig = /** @type {import('../types/config').SidebarConfig} */ (
   parseJsonConfig(document)
 );
 
-if (appConfig.sentry) {
+// Check if the environment appears to be acceptable for the client to work.
+// If the check fails we'll log a warning and disable error reporting, but
+// try and continue anyway.
+const environmentOk = checkVersionAndOrigin(window);
+
+if (appConfig.sentry && environmentOk) {
   // Initialize Sentry. This is required at the top of this file
   // so that it happens early in the app's startup flow
   sentry.init(appConfig.sentry);

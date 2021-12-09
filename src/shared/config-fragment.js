@@ -13,7 +13,7 @@
 export function addConfigFragment(baseURL, config) {
   const url = new URL(baseURL);
   const params = new URLSearchParams();
-  params.append('config', JSON.stringify(config));
+  params.append('config', JSON.stringify({ ...config, origin: url.origin }));
   url.hash = params.toString();
   return url.toString();
 }

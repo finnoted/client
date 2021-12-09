@@ -9,6 +9,34 @@ import {
 /** @typedef {import('../../types/config').HostConfig} HostConfig */
 
 /**
+ * Check that the version of the Hypothesis client and the origin it is loaded
+ * in match what is expected.
+ *
+ * @param {Window} window
+ * @return {boolean}
+ */
+export function checkVersionAndOrigin(window) {
+  let ok = true;
+
+  const { version, origin } = parseConfigFragment(window.location.href);
+  if (version !== '__VERSION__') {
+    console.warn(
+      `The Hypothesis sidebar is using a different version (__VERSION__) than the host page (${version}). It may not work.`
+    );
+    ok = false;
+  }
+
+  if (window.origin !== origin) {
+    console.warn(
+      `The Hypothesis sidebar is running in a different origin (${window.origin}) than expected (${origin}). It may not work.`
+    );
+    ok = false;
+  }
+
+  return ok;
+}
+
+/**
  * Return the app configuration specified by the frame embedding the Hypothesis
  * client.
  *
